@@ -10,12 +10,12 @@ const p = document.createElement('p');
 let previousGuesses = [];
 let numGuesses = 1;
 let playGame = true;
-let remainingSeconds = 60;
+let remainingSeconds = 10;
 
 document.querySelector('#remaining-time').innerHTML = remainingSeconds;
 
 // Cada segundo (1000ms) quiero que ejecutes la función updateRemainingTime
-setInterval(updateRemainingTime, 1000); 
+const timer = setInterval(updateRemainingTime, 1000); 
 
 function updateRemainingTime() {
     console.log('Me ejecuto cada segundo. Valor de remainingSeconds: ', remainingSeconds);
@@ -26,27 +26,21 @@ function updateRemainingTime() {
     document.querySelector('#remaining-time').innerHTML = remainingSeconds;
 
     // 3. Cuando llegue a 0 ha perdido
+    //   3.1 Bloquear el input para que no pueda escribir más. Pensad que está funcionalidad ya se da cuando te equivocas muchas veces, buscad en el código como lo hace el programador
+    if (remainingSeconds == 0) 
+    {
+        endGame();
+        displayMessage(`Game Over! Number was ${randomNumber}`);
+        submit.disabled = true;
+        clearInterval(timer);
 
-if (remainingSeconds === -1) {
-    alert('The time is over!')
-    //Clear user input
-    userInput.value = '';
-    //Disable user input button
-    userInput.setAttribute('disabled', '');
-    //Display Start new Game Button
-          p.classList.add('button');
-          p.innerHTML = `<h1 id="newGame">Start New Game</h1>`
-    startOver.appendChild(p);
-    playGame = false;
-    newGame();
+    }
 
-}
-    // 3.1 Bloquear el input para que no pueda escribir más. Pensad que está funcionalidad ya se da cuando te equivocas muchas veces, buscad en el código como lo hace el programador
     // 3.2 Mostrar un mensaje que el tiempo ha finalizado e informar al usuario del numero secreto, cual era
     // 3.3 Bonus: IMPEDIR que el usuario pueda hacer click en el botón
-    // 3.4. Bonus Samane: cuando llegue a 0 debe dejar de restar. Buscar como se hace para limpiar un setInterval
-    // 3.5 Bounus Aleix: en vez de que empiece a correr el tiempo nada mas entrar, que haya un boton de Start
-    // 3.6 Bonus Dina: al poner el primer numero que empice a contar el tiempo
+    // 3.4. BOnus Samané: cuando llegue a 0, debe dejar de restar. Buscar como se hace para limpiar un setInterval
+    // 3.5. Bonus: Aleix: en vez de que empiece a correr el tiempo nada más entrar, que haya un botón de Start 
+    // 3.6 Bonus Dina: al poner el primer numero , que empiece a contar el timempo
 }
 
 
@@ -70,7 +64,7 @@ function validateGuess(guess){
         //Keep record of number of attempted guesses
         previousGuesses.push(guess);
         //Check to see if game is over
-        if (numGuesses === 10){
+        if (numGuesses === 11){
             displayGuesses(guess);
             displayMessage(`Game Over! Number was ${randomNumber}`);
             endGame();
@@ -99,7 +93,7 @@ function displayGuesses(guess){
     userInput.value = '';
     guessSlot.innerHTML += `${guess}  `;
     numGuesses++
-    remaining.innerHTML = `${10 - numGuesses}  `;
+    remaining.innerHTML = `${11 - numGuesses}  `;
 }
 
 function displayMessage(message){
@@ -125,10 +119,10 @@ function newGame(){
         //Pick a new random number
         randomNumber = parseInt((Math.random()*100)+1);
         previousGuesses = [];
-        numGuesses = 10;
+        numGuesses = 1;
         guessSlot.innerHTML = '';
         lowOrHi.innerHTML = '';
-        remaining.innerHTML = `${10 - numGuesses}  `;
+        remaining.innerHTML = `${11 - numGuesses}  `;
         userInput.removeAttribute('disabled');
         startOver.removeChild(p);
         playGame = true;
